@@ -1,17 +1,24 @@
+# Backend API
 fastapi
 uvicorn
 python-multipart
 
-pdfplumber
-python-docx
-openpyxl
-pillow
+# Document loaders (PDF / DOCX / Excel) & OCR
+pdfplumber          # PDF 텍스트 추출
+python-docx         # DOCX 문서 로딩
+openpyxl            # Excel 문서 로딩
+pillow              # 이미지 처리
+pytesseract         # 이미지 OCR
+langchain-text-splitters  # 문서 청크 분할
 
+# Embedding & Vector search
 sentence-transformers
 faiss-cpu
 numpy
+torch
 
 # Elasticsearch (rag_elasticsearch.py 사용 시)
 elasticsearch>=8.0.0
 
+# HTTP 통신
 requests
