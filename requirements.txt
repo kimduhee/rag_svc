@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+python-multipart
+
+pdfplumber
+python-docx
+openpyxl
+pillow
+
+sentence-transformers
+faiss-cpu
+numpy
+
+# Elasticsearch (rag_elasticsearch.py 사용 시)
+elasticsearch>=8.0.0
+
+requests
