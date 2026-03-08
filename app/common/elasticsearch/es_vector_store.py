@@ -2,7 +2,7 @@ import numpy as np
 
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from app.core.config import ES_INDEX
+from app.core.config import settings
 
 def doc_deleted(client: Elasticsearch, doc_id: str):
     """
@@ -13,7 +13,7 @@ def doc_deleted(client: Elasticsearch, doc_id: str):
     - update_by_query를 사용하기 때문에 전체 인덱스를 다시 만드는 비용을 줄일 수 있음
     """
     client.update_by_query(
-        index=ES_INDEX,
+        index=settings.es_index,
         body={
             "script": {"source": "ctx._source.deleted = true", "lang": "painless"},
             "query": {"term": {"uid": doc_id}}
@@ -32,7 +32,7 @@ def index_vectors(client: Elasticsearch, vectors: np.ndarray, metadatas: list):
     def gen():
         for i, (vec, m) in enumerate(zip(vectors, metadatas)):
             yield {
-                "_index": ES_INDEX,
+                "_index": settings.es_index,
                 # 하나의 문서(uid) 안에서도 페이지/조각마다 여러 passage가 생기므로
                 # ES의 _id는 (문서 uid, 페이지 번호, 로컬 인덱스)를 조합해서 유일하게 만든다.
                 "_id": f"{m['uid']}_{m['page']}_{i}",

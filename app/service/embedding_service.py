@@ -7,14 +7,14 @@ from pathlib import Path
 from typing import List, Dict
 from fastapi import UploadFile
 from app.loaders.pdf_loader import PDFLoader
-from app.embedding.bge_m3 import BGEEmbedding
-from app.core.config import BASE_UPLOAD_DOC_DIR, ES_INDEX
+from app.embedding.bge_m3 import get_embedding
+from app.core.config import settings
 from app.core.logging import get_logger
 from app.common.elasticsearch.es_vector_store import doc_deleted, index_vectors
 from app.common.elasticsearch.es_client import get_es_client
 from app.common.elasticsearch.es_index import create_index
 
-embedding = BGEEmbedding()
+embedding = get_embedding()
 #vectorstore = FaissStore(dim=1024, path=FAISS_DIR)
 logger = get_logger(__name__)
 
@@ -25,7 +25,7 @@ logger = get_logger(__name__)
 async def doc_embed(uuid: str, file: UploadFile) -> Dict:
 
     # 업로드 할 기본경로
-    upload_path = BASE_UPLOAD_DOC_DIR / uuid
+    upload_path = Path(settings.base_upload_doc_dir) / uuid
     os.makedirs(upload_path, exist_ok=True)
 
     file_name = Path(file.filename).name
@@ -92,9 +92,22 @@ async def doc_embed(uuid: str, file: UploadFile) -> Dict:
         index_vectors(client, vectors, metadatas)
 
     # deleted=False 인 document 개수를 조회하여 현재 활성 passage 수를 확인
-    count = client.count(index=ES_INDEX, body={"query": {"term": {"deleted": False}}})
+    count = client.count(index=settings.es_index, body={"query": {"term": {"deleted": False}}})
     
     logger.debug("# 유효한 값: %s", count["count"]);
-    return {
-        "result": "success"
-    }
+
+"""
+    기능: uuid(문서고유번호)에 대한 소프트 삭제 처리
+"""
+async def doc_soft_delete(uuid: str):
+
+    logger.debug("문서 임베딩 소프트 삭제처리[%s]", uuid)
+
+    try:
+        client = get_es_client()
+        create_index(client)
+
+        doc_deleted(client, uuid)
+        return "success"
+    except:
+        return "fail"

@@ -1,6 +1,6 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from app.core.config import ES_INDEX, VECTOR_DIM
+from app.core.config import settings
 
 def create_index(client: Elasticsearch):
     """
@@ -19,17 +19,17 @@ def create_index(client: Elasticsearch):
     - content: LLM에 넘길 실제 텍스트 (색인은 하지 않고 저장만 함)
     - deleted: soft-delete 플래그. True면 검색에서 제외
     """
-    if client.indices.exists(index=ES_INDEX):
+    if client.indices.exists(index=settings.es_index):
         return
 
     client.indices.create(
-        index=ES_INDEX,
+        index=settings.es_index,
         body={
             "mappings": {
                 "properties": {
                     "passage_embedding": {
                         "type": "dense_vector",
-                        "dims": VECTOR_DIM,
+                        "dims": settings.vector_dim,
                         "index": True,
                         "similarity": "cosine"
                     },

@@ -3,7 +3,7 @@ import requests
 import pytesseract
 
 from PIL import Image
-from app.core.config import IMAGE_LLM_URL
+from app.core.config import settings
 
 def image_caption(image_path):
     """
@@ -13,7 +13,7 @@ def image_caption(image_path):
     - 이미지 파일을 base64로 인코딩해 LLaVA 모델에 전달하고, 그 응답을 설명 텍스트로 사용한다.
     - 네트워크 오류나 모델 문제로 실패할 경우 빈 문자열을 반환한다.
     """
-    url = IMAGE_LLM_URL
+    url = settings.image_llm_url
     with open(image_path, "rb") as f:
         image_base64 = base64.b64encode(f.read()).decode("utf-8")
     prompt = """

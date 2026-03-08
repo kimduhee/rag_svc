@@ -1,23 +1,24 @@
 import pdfplumber
 from pathlib import Path
-from app.core.config import BASE_UPLOAD_DOC_DIR
+from app.core.config import settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.common.utils.image_util import extract_ocr_text
 from app.common.utils.string_util import clean_text
-import logging
+from app.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
-
-text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=50,
-)
+logger = get_logger(__name__)
 
 class PDFLoader:
 
+    def __init__(self, chunk_size=500, chunk_overlap=50):
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap,
+        )
+
     def load(self, pdf_path: str, uuid: str):
 
-        DATA_DIR = BASE_UPLOAD_DOC_DIR / uuid / "data"
+        DATA_DIR = Path(settings.base_upload_doc_dir) / uuid / "data"
         IMAGE_DIR = DATA_DIR / "images"
 
         elements = []
@@ -30,7 +31,7 @@ class PDFLoader:
                 # 해당 페이지의 텍스트 passage에도 연결해 줄 수 있다.
                 page_images = []
 
-                # 1-1) 페이지에 포함된 모든 이미지를 추출
+                # 1) 페이지에 포함된 모든 이미지를 추출
                 for img_idx, img in enumerate(page.images):
                     try:
                         # pdfplumber가 제공하는 이미지 스트림(raw bytes)을 얻어 파일로 저장
@@ -48,7 +49,7 @@ class PDFLoader:
                         ocr_text = extract_ocr_text(image_path_str)
 
                         # 이미지 내용에 대한 자연어 설명(LLaVA)
-                        # 실제로 사용하려면 아래 주석을 해제하고, 위의 더미 문장을 제거하면 된다.
+                        # 실제로 사용하려면 아래 주석을 해제
                         #image_caption = image_caption(image_path_str)
                         image_caption = "이 부분에 이미지에 대한 llm 설명이 들어갑니다."
 
@@ -68,15 +69,15 @@ class PDFLoader:
                         })
                     except Exception as e:
                         # 개별 이미지 처리에 실패해도 전체 파이프라인은 계속 진행
-                        print("이미지 처리 실패:", e)
+                        logger.debug("이미지 처리 실패: %s", e)
 
-                # 1-2) 페이지의 텍스트 추출
+                # 2) 페이지의 텍스트 추출
                 text = page.extract_text()
                 if text and text.strip():
                     # 줄바꿈/공백 정리
                     text = clean_text(text)
                     # LangChain Document 리스트로 분할 후 content만 꺼내서 사용
-                    docs = text_splitter.create_documents([text])
+                    docs = self.text_splitter.create_documents([text])
                     chunks = [d.page_content for d in docs]
 
                     for chunk in chunks:

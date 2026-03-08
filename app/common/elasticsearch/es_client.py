@@ -1,5 +1,5 @@
 from elasticsearch import Elasticsearch
-from app.core.config import ES_HOST
+from app.core.config import settings
 
 _client = None
 
@@ -9,7 +9,7 @@ Elasticsearch 클라이언트를 생성.
 def get_es_client():
     global _client
 
-    if _client is None
-        _client = Elasticsearch(ES_HOST)
+    if _client is None:
+        _client = Elasticsearch(settings.es_host)
     
     return _client
