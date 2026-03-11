@@ -57,7 +57,7 @@ class PDFLoader:
                         elements.append({
                             "uid": uuid,
                             "type": "image",
-                            "page": page_idx + 1,
+                            "page": str(page_idx + 1),
                             "content": f"""
         [Image]
         text: {ocr_text}
@@ -85,7 +85,7 @@ class PDFLoader:
                         elements.append({
                             "uid": uuid,
                             "type": "text",
-                            "page": page_idx + 1,
+                            "page": str(page_idx + 1),
                             "content": chunk,
                             "doc": doc_name,
                             # 같은 페이지에서 추출한 이미지들을 연결해 두면,

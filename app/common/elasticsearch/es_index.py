@@ -35,7 +35,7 @@ def create_index(client: Elasticsearch):
                     },
                     "uid": { "type": "keyword" },
                     "type": { "type": "text" },
-                    "page": { "type": "integer" },
+                    "page": { "type": "text" },
                     "doc": { "type": "keyword" },
                     "images": { "type": "keyword" },
                     "content": { "type": "text"},

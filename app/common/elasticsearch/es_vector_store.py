@@ -1,8 +1,12 @@
 import numpy as np
+import json
 
 from elasticsearch import Elasticsearch
-from elasticsearch.helpers import bulk
+from elasticsearch.helpers import bulk, BulkIndexError
 from app.core.config import settings
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 def doc_deleted(client: Elasticsearch, doc_id: str):
     """
@@ -49,4 +53,7 @@ def index_vectors(client: Elasticsearch, vectors: np.ndarray, metadatas: list):
                     "deleted": False
                 }
             }
-    bulk(client, gen(), refresh=True)
+    try:
+        bulk(client, gen(), refresh=True)
+    except BulkIndexError as e:
+        logger.exception(json.dumps(e.errors, indent=2))

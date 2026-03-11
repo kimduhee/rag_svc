@@ -1,20 +1,13 @@
 """
-최종 Ollama 요청 포맷 :
+Ollama 요청 포맷 :
 
 {
     'model': 'llama3', 
     'messages': [
         {
-            'role': 'system', 
+            'role': 'system | user | assistant', 
             'content': 'system_prompt 내용용'
-        }, 
-        {
-            'role': 'user', 
-            'content': '
-                [Context]
-                    추출된 chunk text
-                [Question]
-                    사용자 질문 내용'}], 
+        }
     'stream': True
 }
 """

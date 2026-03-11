@@ -2,11 +2,14 @@ import os
 import shutil
 import uuid
 import numpy as np
+import requests
+import httpx
 
 from pathlib import Path
 from typing import List, Dict
 from fastapi import UploadFile
 from app.loaders.pdf_loader import PDFLoader
+from app.loaders.excel_loader import ExcelLoader
 from app.embedding.bge_m3 import get_embedding
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -22,24 +25,31 @@ logger = get_logger(__name__)
 문서 업로드
 1. 파일 저장
 """
-async def doc_embed(uuid: str, file: UploadFile) -> Dict:
+async def doc_embed(uuid: str, save_path: str) -> Dict:
+#async def doc_embed(uuid: str, file: UploadFile) -> Dict:
+    # 벡엔드에 전달할 상태값
+    status_data = {}
+    status_data["uuid"] = uuid
 
     # 업로드 할 기본경로
-    upload_path = Path(settings.base_upload_doc_dir) / uuid
-    os.makedirs(upload_path, exist_ok=True)
+    #upload_path = Path(settings.base_upload_doc_dir) / uuid
+    #os.makedirs(upload_path, exist_ok=True)
 
-    file_name = Path(file.filename).name
-    file_suffix = Path(file.filename).suffix
-    save_path = upload_path / f"{file_name}"
+    #file_name = Path(file.filename).name
+    #file_suffix = Path(file.filename).suffix
+    #save_path = upload_path / f"{file_name}"
 
+    file_suffix = Path(save_path).suffix
     # ==========================================================================================
     # 1)파일 저장
     # ==========================================================================================
-    with open(save_path, "wb") as f:
-        f.write(await file.read())
+    #with open(save_path, "wb") as f:
+    #    f.write(await file.read())
 
     if file_suffix.lower() == ".pdf":
         loader = PDFLoader()
+    elif file_suffix.lower() == ".xlsx" or file_suffix.lower() == ".xlsm":
+        loader = ExcelLoader()
     else:
         raise ValueError(f"Unsupported file type: {file_suffix}")
 
@@ -93,8 +103,24 @@ async def doc_embed(uuid: str, file: UploadFile) -> Dict:
 
     # deleted=False 인 document 개수를 조회하여 현재 활성 passage 수를 확인
     count = client.count(index=settings.es_index, body={"query": {"term": {"deleted": False}}})
-    
+
     logger.debug("# 유효한 값: %s", count["count"]);
+    
+    try:
+        status_data["status"] = "end"
+        logger.debug("#전송시작!!")
+        logger.debug("#param: %s", status_data)
+        async with httpx.AsyncClient(timeout=5) as client:
+            await client.post(
+                settings.local_domain,
+                json=status_data
+            )
+
+        logger.debug("#전송끝!!")
+
+    except Exception as e:
+        logger.exception("문서 전처리 상태 전송 오류: %s", str(e))
+
 
 """
     기능: uuid(문서고유번호)에 대한 소프트 삭제 처리
