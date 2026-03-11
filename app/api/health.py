@@ -24,7 +24,9 @@ def health_check():
 
     result = {}
 
+    #======================================================
     # elastic health check
+    #======================================================
     try:
         client = get_es_client()
 
@@ -40,7 +42,9 @@ def health_check():
     except Exception as e:
         result["es_check"] = False
 
+    #======================================================
     # llm health check
+    #======================================================
     try:
         res = requests.get(settings.llm_check_url)
         logger.info("llm check: %s", res)

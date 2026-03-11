@@ -10,7 +10,7 @@ logger = get_logger(__name__)
 
 def question_search(question: str):
 
-    results = search_hybrid(question, top_k=5, bm25_k=30, alpha=0.6, max_chars=3000)
+    results = search_hybrid(question, top_k=5, bm25_k=30, alpha=0.6)
 
     logger.debug("\n################### LLM에 전달할 Context ###################")
     logger.debug(results)

@@ -152,8 +152,7 @@ def rerank_hybrid_results(
 
 def search_hybrid(query: str, top_k: int = 5,
                   bm25_k: int = 30,
-                  alpha: float = 0.6,
-                  max_chars: int = 3000):
+                  alpha: float = 0.6):
 
     client = get_es_client()
     create_index(client)
@@ -196,7 +195,8 @@ def search_hybrid(query: str, top_k: int = 5,
             logger.debug("텍스트:%s %s", r["content"], "\n")
     logger.debug("\n################### 검색 결과 종료료 ###################")
 
-    return build_context(hybrid_results, max_chars)
+    #return build_context(hybrid_results, max_chars)
+    return hybrid_results
 
 def _make_passage_key(result: dict) -> tuple:
     """
@@ -204,20 +204,3 @@ def _make_passage_key(result: dict) -> tuple:
     - uid + page + type 조합을 기본으로 사용 (필요시 조정 가능)
     """
     return (result["uid"], result["page"], result["type"])
-
-def build_context(results, max_chars=3000):
-    """
-    검색된 passage 리스트에서 LLM에 넘길 최종 컨텍스트 문자열을 구성한다.
-
-    - 점수 순으로 passage를 이어붙이다가 max_chars를 초과하면 중단
-    - 너무 긴 컨텍스트는 LLM 입력 토큰 수를 초과할 수 있으므로 상한을 둔다.
-    """
-    context_parts = []
-    total = 0
-    for r in results:
-        text = r["content"]
-        if total + len(text) > max_chars:
-            break
-        context_parts.append(text)
-        total += len(text)
-    return "\n\n".join(context_parts)

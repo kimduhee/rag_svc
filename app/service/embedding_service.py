@@ -41,7 +41,7 @@ async def doc_embed(uuid: str, save_path: str) -> Dict:
 
     file_suffix = Path(save_path).suffix
     # ==========================================================================================
-    # 1)파일 저장
+    # 1)loader 설정정
     # ==========================================================================================
     #with open(save_path, "wb") as f:
     #    f.write(await file.read())
@@ -51,6 +51,8 @@ async def doc_embed(uuid: str, save_path: str) -> Dict:
     elif file_suffix.lower() == ".xlsx" or file_suffix.lower() == ".xlsm":
         loader = ExcelLoader()
     else:
+        status_data["status"] = "fail"
+        await status_response(uuid, status_data)
         raise ValueError(f"Unsupported file type: {file_suffix}")
 
     logger.debug("파일 저장 경로: %s", save_path);
@@ -102,12 +104,15 @@ async def doc_embed(uuid: str, save_path: str) -> Dict:
         index_vectors(client, vectors, metadatas)
 
     # deleted=False 인 document 개수를 조회하여 현재 활성 passage 수를 확인
-    count = client.count(index=settings.es_index, body={"query": {"term": {"deleted": False}}})
+    #count = client.count(index=settings.es_index, body={"query": {"term": {"deleted": False}}})
 
-    logger.debug("# 유효한 값: %s", count["count"]);
-    
+    #logger.debug("# 유효한 값: %s", count["count"]);
+    status_data["status"] = "complete"
+    await status_response(uuid, status_data)
+
+
+async def status_response(uuid: str, status_data: dict):
     try:
-        status_data["status"] = "end"
         logger.debug("#전송시작!!")
         logger.debug("#param: %s", status_data)
         async with httpx.AsyncClient(timeout=5) as client:

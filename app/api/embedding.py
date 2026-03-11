@@ -7,10 +7,41 @@ from pathlib import Path
 from app.service.embedding_service import doc_embed, doc_soft_delete
 from app.common.response.response_model import ResponseModel
 from app.core.config import settings
-from app.model.model_status import EmbeddingStatus
+from app.schemas.embedding_schema import EmbeddingStatus, EmbeddingCreate, EmbeddingDelete
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/chat")
+
+"""
+(삭제대상)문서를 업로드 한다.
+=> 백엔드에서 업로드 하고 업로드 경로 받는 부분 부터 시작
+"""
+@router.post("/embedding-upload", response_model=ResponseModel)
+async def embedding_create(uuid: str, file: UploadFile = File(...)):
+    result = {}
+
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file uploaded")
+
+    logger.info(f"[UPLOAD] filename={file.filename}")
+
+    try:
+        upload_path = Path(settings.base_upload_doc_dir) / uuid
+        os.makedirs(upload_path, exist_ok=True)
+
+        file_name = Path(file.filename).name
+        file_suffix = Path(file.filename).suffix
+        save_path = upload_path / f"{file_name}"
+
+        with open(save_path, "wb") as f:
+            f.write(await file.read())
+
+        result["file_path"] = save_path.replace("\\", "/")
+        return ResponseModel.success_response(data=result)
+    except Exception as e:
+        logger.exception("[UPLOAD ERROR]%s", str(e))
+        #raise HTTPException(status_code=500, detail=str(e))
+        return ResponseModel.fail_response()
 
 """
 문서에 대한 임베딩 처리한다.
@@ -26,30 +57,14 @@ Returns:
     
 """
 @router.post("/embedding-create", response_model=ResponseModel)
-async def embedding_create(uuid: str, file: UploadFile = File(...)):
+async def embedding_create(req: EmbeddingCreate):
 
     result = {}
 
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="No file uploaded")
-
-    logger.info(f"[UPLOAD] filename={file.filename}")
+    logger.info(f"filename={req.save_path}")
 
     try:
-        # 추후 백엔드에서 처리될 부분(파일 업로드) Start ==========================================================
-        upload_path = Path(settings.base_upload_doc_dir) / uuid
-        os.makedirs(upload_path, exist_ok=True)
-
-        file_name = Path(file.filename).name
-        file_suffix = Path(file.filename).suffix
-        save_path = upload_path / f"{file_name}"
-
-        with open(save_path, "wb") as f:
-            f.write(await file.read())
-        # 추후 백엔드에서 처리될 부분(파일 업로드) End ============================================================
-
-        #await doc_embed(uuid, file)
-        task = asyncio.create_task(doc_embed(uuid, save_path))
+        task = asyncio.create_task(doc_embed(req.uuid, req.save_path))
         def task_done(t):
             if t.exception():
                 logger.exception(t.exception())
@@ -57,7 +72,7 @@ async def embedding_create(uuid: str, file: UploadFile = File(...)):
         task.add_done_callback(task_done)
 
         # 문서 전처리 시작됨을 전달
-        result["uuid"] = uuid
+        result["uuid"] = req.uuid
         result["status"] = "start"
 
         return ResponseModel.success_response(data=result)
@@ -68,7 +83,7 @@ async def embedding_create(uuid: str, file: UploadFile = File(...)):
 
 """
 (전처리상태 호출 확인용용)문서 전처리 작업 진행상태 처리한다.
-TODO 백엔드에서 처리해야 하는 부분이며 추후 삭제제
+TODO 백엔드에서 처리해야 하는 부분이며 추후 삭제
 
 Args:
     uuid(str): 문서고유번호
@@ -90,12 +105,13 @@ Returns:
     
 """
 @router.post("/embedding-delete", response_model=ResponseModel)
-async def embedding_delete(uuid: str):
+async def embedding_delete(req: EmbeddingDelete):
 
     result = {}
 
     try:
-        await doc_soft_delete(uuid)
+        await doc_soft_delete(req.uuid)
+        # TODO 이전 업로드 파일 삭제 처리 구현 필요
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))

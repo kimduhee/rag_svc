@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import health, preprocessing, question
+from app.api import health, embedding, question
 from app.core.logging import get_logger
 
 app = FastAPI(
@@ -9,5 +9,5 @@ app = FastAPI(
 )
 
 app.include_router(health.router)
-app.include_router(preprocessing.router)
+app.include_router(embedding.router)
 app.include_router(question.router)

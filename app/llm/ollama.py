@@ -5,6 +5,7 @@ import time
 from app.llm.prompt import get_system_content, get_user_content
 from app.core.config import settings
 from app.core.logging import get_logger
+from app.common.utils.string_util import build_context
 
 logger = get_logger(__name__)
 
@@ -16,30 +17,34 @@ class OllamaClient:
 
     def generate(self, question: str, results: str):
 
-        if len(results) == 0:
+        # LLM 전달을 위한 chunk 병합
+        join_context = build_context(results, 3000) # TODO 길이는 환경변수로 빼야함
+        
+        # 조회된 chunk 없을 경우 처리
+        if len(join_context) == 0:
             yield f"data: [TOKEN]내부의 관련 자료를 찾을수 없습니다. \n\n"
             time.sleep(0.5)
             yield f"data: [DONE]"
             return
 
         messages = []
-        # system 영역
+        # system message 영역
         system_block = {
             "role": "system",
             "content": get_system_content()
         }
         
-        # history 영역
+        # history message 영역
         # TODO 문맥 유지를 위해 이전 5개 정도의 대화 내역 가져오기
 
-        # question 영역
+        # question message 영역
         question_block = {
             "role": "user",
-            "content": get_user_content(question, results)
+            "content": get_user_content(question, join_context)
         }
 
         messages.append(system_block)
-        # TODO 문맥 유지를 위해 이전 5개 정도의 대화 내역 가져오기
+        # TODO 대화 이력 셋팅
         messages.append(question_block)
 
         payload = {
@@ -69,21 +74,34 @@ class OllamaClient:
             #전체 답변 저장용
             full_answer = ""
             
+            # 질문 TIKEN 전달
             for line in r.iter_lines():
                 if line:
                     data = json.loads(line)
 
-                    logger.debug("data 값: %s", data)
+                    logger.debug("LLM TOKEN 응답값: %s", data)
 
                     if data.get("done"):
-                        #스트림 완료 전달
-                        yield f"data: [DONE] \n\n"
                         break
 
                     if "message" in data:
                         content = data["message"]["content"]
                         full_answer += content
                         yield f"data: [TOKEN]{content} \n\n"
+
+            # 참조 문서 내역 전달
+            for idx, r in enumerate(results):
+                reference = {
+                    "page": r["page"],
+                    "file_name": r["doc"],
+                    "uid": r["uid"],
+                    "content": r["content"]
+                }
+                
+                yield f"data: [REFERENCE]{reference} \n\n"
+
+            # 완료 처리
+            yield f"data: [DONE] \n\n"
 
         except requests.exceptions.ConnectTimeout:
             logger.exception("LLM 연결 timeout")
@@ -101,21 +119,6 @@ class OllamaClient:
             logger.exception("기타에러: %s", str(e))
             yield f"data: [ERROR]일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요. \n\n"
             return
-
-        """
-        self.save_chat_history(question, full_answer)
-
-        result = r.json()
-
-        logger.debug("LLM Answer: %s", result)
-
-        if "error" in result:
-            error_msg = result["error"]
-
-            return error_msg
-
-        return result["message"]["content"]
-        """
 
     def save_chat_history(self, question, answer):
         logger.debug("채팅 내역 DB 저장!!!!")

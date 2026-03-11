@@ -1,33 +1,27 @@
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
-#from app.rag.pipeline import RAGPipeline
 from app.embedding.bge_m3 import BGEEmbedding
 from app.llm.ollama import OllamaClient
 from app.service.search_service import question_search
-#from app.core.config import FAISS_DIR
-#from app.core.config import OLLAMA_MODEL
+from app.schemas.question_schema import Question
 
 router = APIRouter(prefix="/api/chat")
 
-#store = FaissStore(dim=1024, path=FAISS_DIR)
-#embedder = BGEEmbedding()
-#llm = OllamaClient()
+"""
+질문에 대한 LLM 요청을 한다.
 
-#pipeline = RAGPipeline(
-    #store=store,
-#    embedder=embedder
-    #llm=llm
-#)
-
-
+desc:
+    질문 임베딩(BAAI/bge-m3) => 엘라스틱서치(bm25, KNN) 검색 => LLM질의(ollama or vLLM)
+Args:
+    question(str): 질문 문자열
+Returns:
+    답변 TOKEN(text/event-stream)
+"""
 @router.post("/question")
-def query(question: str):
+def query(req: Question):
 
-    #return question_search(question)
-    
     return StreamingResponse(
-        question_search(question),
+        question_search(req.question),
         media_type="text/event-stream"
     )
-    
-    #return pipeline.query(q)
+
