@@ -208,7 +208,6 @@ def search_hybrid(query: str, top_k: int = 5,
     )
 
     for idx, r in enumerate(hybrid_results):
-        
         logger.debug("# %s%s", idx + 1, "번째###############################################")
         logger.debug("# 점수: %s", str(r["score"]))
         logger.debug("# 페이지: %s", r["page"])
@@ -218,11 +217,18 @@ def search_hybrid(query: str, top_k: int = 5,
         elif r["type"] == "text":
             logger.debug("# 텍스트: %s %s", r["content"], "\n")
         logger.debug("######################################################################")
+
     return hybrid_results
 
-def _make_passage_key(result: dict) -> tuple:
-    """
-    하나의 passage를 유일하게 식별하기 위한 키를 생성.
+"""
+하나의 passage를 유일하게 식별하기 위한 키를 생성.
+
+desc:
     - uid + page + type 조합을 기본으로 사용 (필요시 조정 가능)
-    """
+Args:
+    result(dict): 메타데이터
+Returns:
+    생성한 키 값값
+"""
+def _make_passage_key(result: dict) -> tuple:
     return (result["uid"], result["page"], result["type"])
