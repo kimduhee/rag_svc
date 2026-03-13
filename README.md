@@ -15,8 +15,13 @@
 + 추후 백엔드 서버에서 파일 업로드 후 문서의 유일값(UUID)을 채번하여 파일경로와 함께 요청
 + PDF, Excel 파일 등 문서 업로드
 
+### 임베딩
++ BAAI/bge-m3 모델 임베딩 처리
++ SentenceTransformer
+
 ### 답변 생성
 + 질문에 대해 LLM에 답변 요청
++ Hybrid 검색(bm25+knn)
 <pre><code>[화면]
 질문요청
  ↓
@@ -48,6 +53,7 @@ event-stream 기반 답변 및 출처문서 view
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
 
 
 
