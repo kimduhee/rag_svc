@@ -10,11 +10,15 @@ logger = get_logger(__name__)
 
 class PDFLoader:
 
-    def __init__(self, chunk_size=500, chunk_overlap=50):
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=chunk_size,
-            chunk_overlap=chunk_overlap,
-        )
+    def __init__(self, chunk_size=500, chunk_overlap=50, splitter="recursive"):
+
+        if splitter == "recursive":
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=chunk_size,
+                chunk_overlap=chunk_overlap,
+            )
+        self.splitter = splitter
+        self.text_splitter = text_splitter
 
     def load(self, pdf_path: str, uuid: str):
 

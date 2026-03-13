@@ -41,7 +41,7 @@ async def doc_embed(uuid: str, save_path: str) -> Dict:
 
     file_suffix = Path(save_path).suffix
     # ==========================================================================================
-    # 1)loader 설정정
+    # 1)loader 설정
     # ==========================================================================================
     #with open(save_path, "wb") as f:
     #    f.write(await file.read())
