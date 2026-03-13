@@ -36,7 +36,7 @@ async def embedding_create(uuid: str, file: UploadFile = File(...)):
         with open(save_path, "wb") as f:
             f.write(await file.read())
 
-        result["file_path"] = save_path.replace("\\", "/")
+        result["file_path"] = save_path.as_posix()
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))
@@ -116,7 +116,7 @@ async def embedding_delete(req: EmbeddingDelete):
             return ResponseModel.fail_response()
         
         # TODO 이전버전 업로드 파일 삭제 처리 구현 필요
-        
+
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))

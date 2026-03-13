@@ -1,4 +1,6 @@
 import pdfplumber
+import os
+
 from pathlib import Path
 from app.core.config import settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -43,6 +45,9 @@ class PDFLoader:
                         image_bytes = stream.get_data()
                         image_filename = f"{doc_name}_p{page_idx+1}_img{img_idx+1}.png"
                         image_path = IMAGE_DIR / image_filename
+
+                        os.makedirs(IMAGE_DIR, exist_ok=True)
+
                         with open(image_path, "wb") as f:
                             f.write(image_bytes)
 
