@@ -1,7 +1,12 @@
 # 환경구성
 + Framework: Fast API(0.128.0)
 + lang: Python(3.12.0)
+
+
+# 모델 및 라이브러리
++ 임베딩: BAAI/bge-m3
 + LLM_MODEL: llama3
++ 
 
 
 # 실행
@@ -16,3 +21,4 @@
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
