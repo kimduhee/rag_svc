@@ -14,3 +14,5 @@
 ### 질문에 대한 LLM 답변 token stream
 <img width="1515" height="423" alt="Image" src="https://github.com/user-attachments/assets/33ebd737-a465-4c77-bbc8-1e42f71b9d63" />
 
+### 화면에 전달되는 데이터(답변token 및 출처문서정보)
+<img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
