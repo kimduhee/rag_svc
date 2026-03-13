@@ -3,3 +3,6 @@
 
 ### 질문에 대한 vertorDb 조회 chunk text
 <img width="1136" height="437" alt="Image" src="https://github.com/user-attachments/assets/2f859cd3-b31e-4c37-b984-203d05a33b20" />
+
+### 질문에 대한 LLM 답변 token stream
+<img width="1515" height="423" alt="Image" src="https://github.com/user-attachments/assets/33ebd737-a465-4c77-bbc8-1e42f71b9d63" />
