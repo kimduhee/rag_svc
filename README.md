@@ -18,7 +18,7 @@
 ### 답변 생성
 + 질문에 대해 LLM에 답변 요청
 <pre><code>[화면]
-질문요청(화면)
+질문요청
  ↓
 [백엔드]
 LLM 플랫폼에 질문요청
@@ -48,6 +48,7 @@ event-stream 기반 답변 및 출처문서 view
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
 
 
 
