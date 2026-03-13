@@ -1,4 +1,3 @@
-import logging
 import asyncio
 import os
 
@@ -8,9 +7,10 @@ from app.service.embedding_service import doc_embed, doc_soft_delete
 from app.common.response.response_model import ResponseModel
 from app.core.config import settings
 from app.schemas.embedding_schema import EmbeddingStatus, EmbeddingCreate, EmbeddingDelete
+from app.core.logging import get_logger
 
-logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/chat")
+logger = get_logger(__name__)
 
 """
 (삭제대상)문서를 업로드 한다.
@@ -110,8 +110,13 @@ async def embedding_delete(req: EmbeddingDelete):
     result = {}
 
     try:
-        await doc_soft_delete(req.uuid)
-        # TODO 이전 업로드 파일 삭제 처리 구현 필요
+        result = await doc_soft_delete(req.uuid)
+
+        if result == "fail":
+            return ResponseModel.fail_response()
+        
+        # TODO 이전버전 업로드 파일 삭제 처리 구현 필요
+        
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))

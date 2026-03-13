@@ -1,10 +1,14 @@
 import logging
+import os
 
 """
 프로젝트 공통 로깅 설정
 """
+LOG_LEVEL = os.getenv("LOG_LEVEL", "DEBUG").upper()
+LEVEL = logging._nameToLevel.get(LOG_LEVEL, logging.DEBUG)
+
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=LEVEL,
     format="%(asctime)s [%(levelname)s] %(name)s - %(message)s"
 )
 

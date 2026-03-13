@@ -2,7 +2,8 @@ import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    env: str = "local"
+    env: str
+    log_level: str
     local_domain: str
     es_host: str
     es_index: str

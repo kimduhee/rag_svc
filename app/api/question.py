@@ -4,6 +4,7 @@ from app.embedding.bge_m3 import BGEEmbedding
 from app.llm.ollama import OllamaClient
 from app.service.search_service import question_search
 from app.schemas.question_schema import Question
+from app.core.logging import get_logger
 
 router = APIRouter(prefix="/api/chat")
 
