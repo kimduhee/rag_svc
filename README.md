@@ -4,9 +4,11 @@
 
 
 # 모델 및 라이브러리
-+ 임베딩: BAAI/bge-m3
-+ LLM_MODEL: llama3
-+ 
++ Embedding Model: BAAI/bge-m3
++ Vector Database: Elasticsearch
++ Retrieval: Hybrid Search (BM25 + kNN)
++ LLM: llama3.1:8b (Ollama)
++ Vision Model: llava
 
 
 # 실행
@@ -21,4 +23,5 @@
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
 
