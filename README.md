@@ -10,6 +10,15 @@
 + LLM: llama3.1:8b (Ollama)
 + Vision Model: llava
 
+# 기능구현
+### 파일 업로드
++ 추후 백엔드 서버에서 파일 업로드 후 문서의 유일값(UUID)을 채번하여 파일경로와 함께 요청
++ PDF, Excel 파일 등 문서 업로드
+
+### 답변 생성
++ 질문에 대해 LLM에 답변 요청
+
+
 
 # 실행
 ### PDF 문서내 이미지 추출 및 저장, 벡터DB(Elasticsearch) 저장
@@ -23,5 +32,6 @@
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
 
 
