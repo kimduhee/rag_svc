@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     image_llm_url: str
     llm_url: str
     llm_model: str
+    llm_image_model: str
     embedding_model: str
     device: str
 

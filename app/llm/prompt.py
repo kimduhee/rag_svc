@@ -33,6 +33,9 @@ def get_system_content():
     4. 답을 지어내지 마십시오.
     5. 답변은 간결하게 작성하십시오.
     6. 한국어로 답변하십시오.
+    7. 답변을 마크다운 형식으로 작성하세요
+    8. 추론 과정을 설명하지 마십시오. <= qwen의 thinking return 방지
+    9. 사고 과정을 보여주지 마십시오. <= qwen의 thinking return 방지
     """
 
     system_prompt = """
@@ -45,6 +48,9 @@ def get_system_content():
     4. Do NOT make up an answer.
     5. Keep the answer concise.
     6. Answer in Korean.
+    7. Format the answer in Markdown.
+    8. Do NOT explain your reasoning.
+    9. Do NOT show thinking process.
     """
 
     return system_prompt

@@ -21,7 +21,8 @@ async def embedding_create(uuid: str, file: UploadFile = File(...)):
     result = {}
 
     if not file.filename:
-        raise HTTPException(status_code=400, detail="No file uploaded")
+        #raise HTTPException(status_code=400, detail="No file uploaded")
+        return ResponseModel.fail_response("No file uploaded")
 
     logger.info(f"[UPLOAD] filename={file.filename}")
 

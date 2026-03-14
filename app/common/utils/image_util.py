@@ -22,7 +22,7 @@ def image_caption(image_path):
     그래프라면 축과 수치 의미를 설명하세요.
     """
     payload = {
-        "model": "llava",
+        "model": settings.llm_image_model,
         "prompt": prompt,
         "images": [image_base64],
         "stream": False

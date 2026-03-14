@@ -86,6 +86,8 @@ class OllamaClient:
 
                     if "message" in data:
                         content = data["message"]["content"]
+                        if content == "":
+                            continue
                         full_answer += content
                         yield f"data: [TOKEN]{content} \n\n"
 
@@ -99,6 +101,8 @@ class OllamaClient:
                 }
                 
                 yield f"data: [REFERENCE]{reference} \n\n"
+
+            logger.debug("# 답변 완성값: \n %s", full_answer)
 
             # 완료 처리
             yield f"data: [DONE] \n\n"
