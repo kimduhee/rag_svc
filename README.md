@@ -1,18 +1,67 @@
 # 환경구성
 + Framework: Fast API(0.128.0)
 + lang: Python(3.12.0)
-+ LLM_MODEL: llama3
+
+
+# 모델 및 라이브러리
++ Embedding Model: BAAI/bge-m3
++ Vector Database: Elasticsearch
++ Retrieval: Hybrid Search (BM25 + kNN)
++ LLM: llama3.1:8b (Ollama)
++ Vision Model: llava
+
+# 기능구현
+### 파일 업로드
++ 추후 백엔드 서버에서 파일 업로드 후 문서의 유일값(UUID)을 채번하여 파일경로와 함께 요청
++ PDF, Excel 파일 등 문서 업로드
+
+### 문서 로딩
++ PDF: pdfplumber
++ Excel: openpyxl
+
+### 임베딩
++ BAAI/bge-m3 모델 임베딩 처리
++ SentenceTransformer
+
+### 답변 생성
++ 질문에 대해 LLM에 답변 요청
++ Hybrid 검색(bm25+knn)
+<pre><code>[화면]
+질문요청
+ ↓
+[백엔드]
+LLM 플랫폼에 질문요청
+ ↓
+[LLM플랫폼]
+질문 문자 임베딩 → Elasticsearch 검색(bm25+knn) → LLM에 질의(Ollama_llama3.1:8b)
+ ↓
+[event-stream]
+ ↓
+[백엔드]
+화면에 답변 TOKEN 전송 → 출처문서 전송 → 질문/답변/출처문서 내역 DB저장
+ ↓
+[화면]
+event-stream 기반 답변 및 출처문서 view
+</code></pre>
 
 
 # 실행
 ### PDF 문서내 이미지 추출 및 저장, 벡터DB(Elasticsearch) 저장
 <img width="1510" height="240" alt="Image" src="https://github.com/user-attachments/assets/649490f1-cbe5-4cba-af2f-e57d525979c5" />
 
-### 질문에 대한 vertorDb 조회 chunk text
+### 질문에 대한 vertorDB 조회
 <img width="1136" height="437" alt="Image" src="https://github.com/user-attachments/assets/2f859cd3-b31e-4c37-b984-203d05a33b20" />
 
-### 질문에 대한 LLM 답변 token stream
+### 질문에 대한 LLM 답변
 <img width="1515" height="423" alt="Image" src="https://github.com/user-attachments/assets/33ebd737-a465-4c77-bbc8-1e42f71b9d63" />
 
 ### 화면에 전달되는 데이터(답변token 및 출처문서정보)
 <img width="1276" height="339" alt="Image" src="https://github.com/user-attachments/assets/fb054745-7861-41cd-a2a6-79c954140750" />
+
+
+
+
+
+
+
+
