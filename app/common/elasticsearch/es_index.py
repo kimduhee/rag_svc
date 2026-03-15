@@ -13,7 +13,7 @@ desc:
         - similarity: 코사인 유사도로 검색
     - uid: 하나의 원본 문서를 나타내는 논리적 UID (여러 passage가 같은 uid를 가질 수 있음)
     - type: "text" / "image" 등 passage의 유형
-    - page: 원본의 페이지 번호
+    - page: 원본의 페이지 번호 OR 시트제목
     - doc: 원본 파일명(확장자 제거)
     - images: passage에 연결된 실제 이미지 파일 경로 리스트
     - content: LLM에 넘길 실제 텍스트 (색인은 하지 않고 저장만 함)

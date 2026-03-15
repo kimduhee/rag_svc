@@ -65,6 +65,7 @@ async def embedding_create(req: EmbeddingCreate):
     logger.info(f"filename={req.save_path}")
 
     try:
+        # 전처리는 스레드에서 처리
         task = asyncio.create_task(doc_embed(req.uuid, req.save_path))
         def task_done(t):
             if t.exception():
