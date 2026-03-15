@@ -22,8 +22,13 @@ embedding = get_embedding()
 logger = get_logger(__name__)
 
 """
-문서 업로드
-1. 파일 저장
+문서에 대한 임베딩 처리한다.
+
+Args:
+    uuid(str): 문서고유번호(백엔드 서버에서 파일 업로드 후 고유 uuid 할당하여 전달)
+    save_path: 문서 위치
+Returns:
+    
 """
 async def doc_embed(uuid: str, save_path: str) -> Dict:
 
@@ -99,17 +104,29 @@ async def doc_embed(uuid: str, save_path: str) -> Dict:
     #count = client.count(index=settings.es_index, body={"query": {"term": {"deleted": False}}})
 
     #logger.debug("# 유효한 값: %s", count["count"]);
+    
+    # ==========================================================================================
+    # 6)전처리 상태 전송
+    # ==========================================================================================
     status_data["status"] = "complete"
     await status_response(uuid, status_data)
 
+"""
+문서 전처리 상태를 전송한다.
 
+Args:
+    uuid(str): 문서고유번호(백엔드 서버에서 파일 업로드 후 고유 uuid 할당하여 전달)
+    status_data: 문서 전처리 상태
+Returns:
+    
+"""
 async def status_response(uuid: str, status_data: dict):
     try:
         logger.debug("#전송시작!!")
         logger.debug("#param: %s", status_data)
         async with httpx.AsyncClient(timeout=5) as client:
             await client.post(
-                settings.local_domain,
+                settings.backend_domain,
                 json=status_data
             )
 
@@ -130,7 +147,10 @@ async def doc_soft_delete(uuid: str):
         client = get_es_client()
         create_index(client)
 
+        # elasticsearch soft-delete 처리리
         doc_deleted(client, uuid)
+
         return "success"
-    except:
+    except Exception as e:
+        logger.exception("소프트 삭제 처리 오류: %s", str(e))
         return "fail"
