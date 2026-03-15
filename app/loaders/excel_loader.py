@@ -12,8 +12,8 @@ class ExcelLoader:
     def load(self, excel_path: str, uuid:str):
         wb = openpyxl.load_workbook(excel_path)
 
-        DATA_DIR = Path(settings.base_upload_doc_dir) / uuid / "data"
-        IMAGE_DIR = DATA_DIR / "images"
+        #DATA_DIR = Path(settings.base_upload_doc_dir) / uuid / "data"
+        #IMAGE_DIR = DATA_DIR / "images"
 
         elements = []
         doc_name = Path(excel_path).stem

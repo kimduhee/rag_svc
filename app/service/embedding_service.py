@@ -10,6 +10,7 @@ from typing import List, Dict
 from fastapi import UploadFile
 from app.loaders.pdf_loader import PDFLoader
 from app.loaders.excel_loader import ExcelLoader
+from app.loaders.docx_loader import DocxLoader
 from app.embedding.bge_m3 import get_embedding
 from app.core.config import settings
 from app.core.logging import get_logger
@@ -18,7 +19,6 @@ from app.common.elasticsearch.es_client import get_es_client
 from app.common.elasticsearch.es_index import create_index
 
 embedding = get_embedding()
-#vectorstore = FaissStore(dim=1024, path=FAISS_DIR)
 logger = get_logger(__name__)
 
 """
@@ -26,34 +26,26 @@ logger = get_logger(__name__)
 1. 파일 저장
 """
 async def doc_embed(uuid: str, save_path: str) -> Dict:
-#async def doc_embed(uuid: str, file: UploadFile) -> Dict:
+
     # 벡엔드에 전달할 상태값
     status_data = {}
     status_data["uuid"] = uuid
 
-    # 업로드 할 기본경로
-    #upload_path = Path(settings.base_upload_doc_dir) / uuid
-    #os.makedirs(upload_path, exist_ok=True)
-
-    #file_name = Path(file.filename).name
-    #file_suffix = Path(file.filename).suffix
-    #save_path = upload_path / f"{file_name}"
-
-    file_suffix = Path(save_path).suffix
     # ==========================================================================================
     # 1)loader 설정
     # ==========================================================================================
-    #with open(save_path, "wb") as f:
-    #    f.write(await file.read())
-
+    file_suffix = Path(save_path).suffix
     if file_suffix.lower() == ".pdf":
         loader = PDFLoader()
     elif file_suffix.lower() == ".xlsx" or file_suffix.lower() == ".xlsm":
+        # TODO 엑셀의 경우 글로벌 처리가 아닌 엑셀양식에 따라 데이터 추출이 달라짐
         loader = ExcelLoader()
+    elif file_suffix.lower() == ".docx":
+        loader = DocxLoader()
     else:
         status_data["status"] = "fail"
         await status_response(uuid, status_data)
-        raise ValueError(f"Unsupported file type: {file_suffix}")
+        raise Exception(f"Unsupported file type: {file_suffix}")
 
     logger.debug("파일 저장 경로: %s", save_path);
 

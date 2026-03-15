@@ -5,7 +5,6 @@ from pathlib import Path
 from app.core.config import settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from app.common.utils.image_util import extract_ocr_text
-from app.common.utils.string_util import clean_text
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -83,8 +82,6 @@ class PDFLoader:
                 # 2) 페이지의 텍스트 추출
                 text = page.extract_text()
                 if text and text.strip():
-                    # 줄바꿈/공백 정리
-                    text = clean_text(text)
                     # LangChain Document 리스트로 분할 후 content만 꺼내서 사용
                     docs = self.text_splitter.create_documents([text])
                     chunks = [d.page_content for d in docs]

@@ -17,7 +17,7 @@ logger = get_logger(__name__)
 => 백엔드에서 업로드 하고 업로드 경로 받는 부분 부터 시작
 """
 @router.post("/embedding-upload", response_model=ResponseModel)
-async def embedding_create(uuid: str, file: UploadFile = File(...)):
+async def embedding_upload(uuid: str, file: UploadFile = File(...)):
     result = {}
 
     if not file.filename:
@@ -41,7 +41,6 @@ async def embedding_create(uuid: str, file: UploadFile = File(...)):
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))
-        #raise HTTPException(status_code=500, detail=str(e))
         return ResponseModel.fail_response()
 
 """
@@ -65,7 +64,7 @@ async def embedding_create(req: EmbeddingCreate):
     logger.info(f"filename={req.save_path}")
 
     try:
-        # 전처리는 스레드에서 처리
+        # 전처리는 비동기 Task로 실행
         task = asyncio.create_task(doc_embed(req.uuid, req.save_path))
         def task_done(t):
             if t.exception():
@@ -80,7 +79,6 @@ async def embedding_create(req: EmbeddingCreate):
         return ResponseModel.success_response(data=result)
     except Exception as e:
         logger.exception("[UPLOAD ERROR]%s", str(e))
-        #raise HTTPException(status_code=500, detail=str(e))
         return ResponseModel.fail_response()
 
 """

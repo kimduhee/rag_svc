@@ -27,6 +27,11 @@ def create_index(client: Elasticsearch):
     if client.indices.exists(index=settings.es_index):
         return
 
+    """
+    similarity
+        -dot_product: 두 벡터를 곱해서 더한 값
+        -cosine: 두 벡터 사이 각도만 비교하는 방식
+    """
     client.indices.create(
         index=settings.es_index,
         body={
@@ -36,7 +41,7 @@ def create_index(client: Elasticsearch):
                         "type": "dense_vector",
                         "dims": settings.vector_dim,
                         "index": True,
-                        "similarity": "cosine"
+                        "similarity": "dot_product"
                     },
                     "uid": { "type": "keyword" },
                     "type": { "type": "text" },
