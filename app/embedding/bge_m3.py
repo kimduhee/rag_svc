@@ -4,8 +4,7 @@ import torch
 
 class BGEEmbedding:
     def __init__(self):
-        device = settings.device
-        self.model = SentenceTransformer(settings.embedding_model, device=device)
+        self.model = SentenceTransformer(settings.embedding_model, device=settings.device)
 
     """
     입력 텍스트 리스트를 한 번에 encode하여 (N, VECTOR_DIM) 형태의 벡터 배열 생성

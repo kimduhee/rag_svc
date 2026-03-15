@@ -5,7 +5,7 @@ from app.core.logging import get_logger
 
 app = FastAPI(
     title="RAG System",
-    description="PDF/Excel/Doc 기반 멀티모달 RAG",
+    description="PDF/Excel/Doc 기반 RAG",
     version="1.0"
 )
 

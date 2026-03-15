@@ -71,10 +71,10 @@ class OllamaClient:
                 yield f"data: [ERROR]llm 요청 처리중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
                 return
 
-            #전체 답변 저장용
+            #전체 답변
             full_answer = ""
             
-            # 질문 TIKEN 전달
+            # 질문 TOKEN 전달
             for line in r.iter_lines():
                 if line:
                     data = json.loads(line)
