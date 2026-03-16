@@ -8,7 +8,6 @@
 + Vector Database: Elasticsearch
 + Retrieval: Hybrid Search (BM25 + kNN)
 + LLM: llama3.1:8b (Ollama)
-+ LLM(이미지 설명): llava (Ollama)
 + Vision Model: llava
 
 # 기능구현
