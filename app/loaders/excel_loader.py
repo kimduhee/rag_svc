@@ -32,5 +32,6 @@ class ExcelLoader:
                 "images": ""
             })
         
-        print(elements)
+        logger.debug(elements)
+        
         return elements

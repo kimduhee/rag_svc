@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from app.core.config import settings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from app.common.utils.image_util import extract_ocr_text
+from app.common.utils.image_util import extract_ocr_text, extract_image_caption
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -58,7 +58,7 @@ class PDFLoader:
 
                         # 이미지 내용에 대한 자연어 설명(LLaVA)
                         # 실제로 사용하려면 아래 주석을 해제
-                        #image_caption = image_caption(image_path_str)
+                        #image_caption = extract_image_caption(image_path_str)
                         image_caption = "이 부분에 이미지에 대한 llm 설명이 들어갑니다."
 
                         # 이미지 하나를 하나의 passage로 저장

@@ -214,8 +214,7 @@ def search_hybrid(query: str, top_k: int = 5,
         logger.debug("# uid: %s", r["uid"])
         if r["type"] == "image":
             logger.debug("# 이미지경로: %s %s", r["images"], "\n")
-        elif r["type"] == "text":
-            logger.debug("# 텍스트: %s %s", r["content"], "\n")
+        logger.debug("# 텍스트: %s %s", r["content"], "\n")
         logger.debug("######################################################################")
 
     return hybrid_results
