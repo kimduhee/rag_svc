@@ -89,7 +89,7 @@ class OllamaClient:
                         if content == "":
                             continue
                         full_answer += content
-                        yield f"data: [TOKEN]{content} \n\n"
+                        yield f"data: [TOKEN]{content}\n\n"
 
             # 참조 문서 내역 전달
             for idx, r in enumerate(results):
@@ -100,12 +100,12 @@ class OllamaClient:
                     "content": r["content"]
                 }
                 
-                yield f"data: [REFERENCE]{reference} \n\n"
+                yield f"data: [REFERENCE]{reference}\n\n"
 
             logger.debug("# 답변 완성값: \n %s", full_answer)
 
             # 완료 처리
-            yield f"data: [DONE] \n\n"
+            yield f"data: [DONE]\n\n"
 
         except requests.exceptions.ConnectTimeout:
             logger.exception("LLM 연결 timeout")
