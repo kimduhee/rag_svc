@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import health, embedding, question
+from app.api import health, embedding, question, test_api
 from app.common.exception.global_exception import global_exception_handler
 from app.core.logging import get_logger
 from fastapi.middleware.cors import CORSMiddleware
@@ -13,6 +13,7 @@ app = FastAPI(
 app.include_router(health.router)
 app.include_router(embedding.router)
 app.include_router(question.router)
+app.include_router(test_api.router)
 
 # 글로벌 예외 처리 설정
 app.add_exception_handler(Exception, global_exception_handler)
