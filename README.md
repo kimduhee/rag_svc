@@ -8,7 +8,15 @@
 + 상단 메뉴에서 'Downloads'
 + 운영체제(Windows, macOS, Linux)에 맞는 버전의 설치 파일 다운로
 + 설치중 'Add Python to PATH' 옵션 체크
-  
+
+### ollama
++ https://ollama.com/download
++ OllamaSetup.exe 설치
+<pre><code>버전 확인
+ollama --version or ollama -v</code></pre>
+<pre><code>설치 모델 확인
+ollama list</code></pre>
+
 # 모델 및 라이브러리
 + Embedding Model: BAAI/bge-m3
 + Vector Database: Elasticsearch
