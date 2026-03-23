@@ -21,6 +21,10 @@ Returns:
 """
 def question_search(question: str):
 
-    results = search_hybrid(question, top_k=5, bm25_k=30, alpha=0.6)
+    try:
+        results = search_hybrid(question, top_k=5, bm25_k=30, alpha=0.6)
+    except Exception as e:
+        yield f"data: [ERROR]llm 요청 처리중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+        return
 
     return llm.generate(question, results)
