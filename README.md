@@ -18,6 +18,9 @@ ollama --version or ollama -v</code></pre>
 ollama list</code></pre>
 <pre><code>모델 설치
 ollama run llama3.1:8b</code></pre>
+<pre><code>모델 삭제
+ollama rm llama3.1:8b</code></pre>
+
 
 # 모델 및 라이브러리
 + Embedding Model: BAAI/bge-m3
