@@ -12,7 +12,7 @@ from app.core.logging import get_logger
 router = APIRouter(prefix="/api/test")
 
 @router.post("/chat-history")
-def query(req: ChatHistory):
+def chatHistory(req: ChatHistory):
 
     if not req.searchText:
 
@@ -48,7 +48,7 @@ def query(req: ChatHistory):
     return result
 
 @router.post("/message-history")
-def query(req: MessageHistory):
+def messageHistory(req: MessageHistory):
 
     if not req.chatId:
 
@@ -101,14 +101,25 @@ def query(req: MessageHistory):
         }
     return result
 
+#채팅 삭제
+@router.post("/chat-delete")
+def chatDelete(req: MessageHistory):
+
+    if not req.chatId:
+
+        result = { "success" : True}
+    else:
+        result = { "success" : True}
+    return result
+
 @router.post("/question")
-def query(req: Question):
+def question(req: Question):
 
     return StreamingResponse(
         test_stream(),
         media_type="text/event-stream"
     )
-    
+
 def test_stream():
 
     id = uuid.uuid4()
