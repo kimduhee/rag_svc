@@ -9,6 +9,17 @@
 + 운영체제(Windows, macOS, Linux)에 맞는 버전의 설치 파일 다운로
 + 설치중 'Add Python to PATH' 옵션 체크
 
+### FastAPI, Uvicorn(서버) 설치
+<pre><code>설치
+pip install fastapi uvicorn
+
+실행
+uvicorn app.main:app --reload
+</code></pre>
++ app.main: 메인 파일 명
++ FastAPI: 객체 이름
++ --reload: 코드 변경 시 자동 재시작
+
 ### ollama
 + https://ollama.com/download
 + OllamaSetup.exe 설치
