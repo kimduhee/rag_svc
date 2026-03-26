@@ -10,26 +10,48 @@
 + 설치중 'Add Python to PATH' 옵션 체크
 
 ### FastAPI, Uvicorn(서버) 설치
-<pre><code>설치
+<pre><code><b>설치</b>
 pip install fastapi uvicorn
 
-실행
+<b>실행</b>
 uvicorn app.main:app --reload
+
+<b>포트 충돌시</b>
+uvicorn app.main:app --reload --port 8001
 </code></pre>
 + app.main: 메인 파일 명
 + FastAPI: 객체 이름
 + --reload: 코드 변경 시 자동 재시작
 
+### 라이브러리 설치
+<pre><code>requirements.txt 파일 내 라이브러리 설치
+
+pip install -r requirements.txt
+</code></pre>
+
+### 가상환경 생성 및 활성화
+<pre><code>프로젝트 루트 디렉토리에서 실행
+
+<b>생성</b>
+python -m venv venv
+
+<b>활성화(PowerShell)</b>
+.venv\Scripts\Acticate.ps1
+
+<b>비활성화</b>
+deactivate
+</code></pre>
+
 ### ollama
 + https://ollama.com/download
 + OllamaSetup.exe 설치
-<pre><code>버전 확인
+<pre><code><b>버전 확인</b>
 ollama --version or ollama -v</code></pre>
-<pre><code>설치 모델 확인
+<pre><code><b>설치 모델 확인</b>
 ollama list</code></pre>
-<pre><code>모델 설치
+<pre><code><b>모델 설치</b>
 ollama run llama3.1:8b</code></pre>
-<pre><code>모델 삭제
+<pre><code><b>모델 삭제</b>
 ollama rm llama3.1:8b</code></pre>
 
 
@@ -76,6 +98,12 @@ event-stream 기반 답변 및 출처문서 view
 
 
 # 실행
+### Docs
+<pre><code>Url: http:127.0.0.1:8000
+Swagger UI: http:127.0.0.1:8000/docs
+대체 문서: http:127.0.0.1:8000/redoc
+</code></pre>
+
 ### PDF 문서내 이미지 추출 및 저장, 벡터DB(Elasticsearch) 저장
 <img width="1510" height="240" alt="Image" src="https://github.com/user-attachments/assets/649490f1-cbe5-4cba-af2f-e57d525979c5" />
 
