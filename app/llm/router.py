@@ -1,7 +1,7 @@
 #from app.core.config import settings
-#from app.llm.ollama import OllamaClient
+#from app.llm.llm_client import LLMClient
 
 #def get_llm():
 #    if settings.env == "local":
-#        return OllamaClient("llava-llama3")
-#    return OllamaClient("Qwen-VL")
+#        return LLMClient("llava-llama3")
+#    return LLMClient("Qwen-VL")

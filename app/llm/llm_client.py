@@ -9,13 +9,51 @@ from app.common.utils.string_util import build_context
 
 logger = get_logger(__name__)
 
-class OllamaClient:
+class LLMClient:
 
     def __init__(self):
         self.model = settings.llm_model
-        self.url = settings.llm_url
+        self.chat_url = settings.llm_chat_url
+        self.generate_url = settings.llm_generate_url
 
-    def generate(self, question: str, results: str):
+    def generate(self, question: str, isStream: bool, results: str):
+        if settings.ENV == "local":
+            if isStream:
+                self._ollama_stream(self, question, results)
+            else:
+                self._ollama(self, question)
+        
+        # TODO 하단 vllm에 대한 구현 필요
+        #else:
+            #if isStream:
+            #else:
+                #self._vllm(self, question)
+
+    def _ollama(self, question: str):
+        res = requests.post(
+            self.generate_url,
+            json={
+                "model": self.model,
+                "prompt": question,
+                "stream": False
+            }
+        )
+
+        return res.json()["response"]
+
+    def _vllm(self, question: str):
+        res = requests.post(
+            self.generate_url,
+            json={
+                "model": self.model,
+                "prompt": question,
+                "max_tokens": 512
+            }
+        )
+
+        return res.json()["choices"][0]["text"]
+
+    def _ollama_stream(self, question: str, results: str):
 
         # LLM 전달을 위한 chunk 병합
         join_context = build_context(results, 3000) # TODO 길이는 환경변수로 빼야함
@@ -57,7 +95,7 @@ class OllamaClient:
 
         try:
             r = requests.post(
-                self.url, 
+                self.chat_url, 
                 json=payload, 
                 stream=True,
                 timeout=(5, 60) # (connect timeout, read timeout)

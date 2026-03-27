@@ -4,7 +4,7 @@ import uuid
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.embedding.bge_m3 import BGEEmbedding
-from app.llm.ollama import OllamaClient
+from app.llm.llm_client import LLMClient
 from app.service.search_service import question_search
 from app.schemas.test_schema import Question, ChatHistory, MessageHistory
 from app.core.logging import get_logger

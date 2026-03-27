@@ -3,7 +3,7 @@ import time
 from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from app.embedding.bge_m3 import BGEEmbedding
-from app.llm.ollama import OllamaClient
+from app.llm.llm_client import LLMClient
 from app.service.search_service import question_search
 from app.schemas.question_schema import Question
 from app.core.logging import get_logger
@@ -21,6 +21,14 @@ Returns:
     답변 TOKEN(text/event-stream)
 """
 @router.post("/question")
+def query(req: Question):
+
+    return StreamingResponse(
+        question_search(req.question),
+        media_type="text/event-stream"
+    )
+
+@router.post("/ask")
 def query(req: Question):
 
     return StreamingResponse(

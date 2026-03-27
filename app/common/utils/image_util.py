@@ -24,7 +24,7 @@ Returns:
 
 def extract_image_caption(image_path):
     try:
-        url = settings.image_llm_url
+        url = settings.llm_generate_url
         with open(image_path, "rb") as f:
             image_base64 = base64.b64encode(f.read()).decode("utf-8")
         

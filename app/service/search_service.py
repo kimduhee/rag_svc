@@ -1,9 +1,9 @@
-from app.llm.ollama import OllamaClient
+from app.llm.llm_client import LLMClient
 from app.embedding.bge_m3 import get_embedding
 from app.common.elasticsearch.es_search import search_hybrid
 from app.core.logging import get_logger
 
-llm = OllamaClient()
+llm = LLMClient()
 embedding = get_embedding()
 logger = get_logger(__name__)
 

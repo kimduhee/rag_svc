@@ -9,9 +9,10 @@ class Settings(BaseSettings):
     es_index: str
     vector_dim: int
     base_upload_doc_dir: str
+    llm_base_url: str
     llm_check_url: str
-    image_llm_url: str
-    llm_url: str
+    llm_generate_url: str
+    llm_chat_url: str
     llm_model: str
     llm_image_model: str
     embedding_model: str
